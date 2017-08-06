@@ -1,0 +1,31 @@
+{
+    "@context": {
+		"schema": "http://schema.org/",
+		"meta": "http://meta.schema.org/"
+	},
+    "@id": "http://schema.org",
+    "@graph": [
+    	{
+      	  "@id": "http://schema.org/Enumeration",
+      	  "@type": "rdfs:Class",
+      	  "rdfs:label": "Enumeration",
+      	  "rdfs:subClassOf": "http://schema.org/Intangible",
+		  "schema:isPartOf": "http://schema.org/"
+    	},
+		{
+		  "@id": "http://schema.org/Intangible",
+		  "@type": "rdfs:Class",
+		  "rdfs:comment": "A utility class that serves as the umbrella for a number of 'intangible' things such as quantities, structured values, etc.",
+		  "rdfs:label": "Intangible",
+		  "rdfs:subClassOf": "http://schema.org/Thing",
+		  "schema:isPartOf": "http://schema.org/"
+		},
+		{
+		  "@id": "http://schema.org/Thing",
+		  "@type": "rdfs:Class",
+		  "rdfs:comment": "The most generic type of item.",
+		  "rdfs:label": "Thing",
+		  "schema:isPartOf": "http://schema.org/"
+		}
+	]
+}

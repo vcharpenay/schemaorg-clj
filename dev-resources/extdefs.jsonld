@@ -1,0 +1,15 @@
+{
+    "@context": {
+		"schema": "http://schema.org/"
+	},
+	"schema:name": "Example.org Hosted Extensions",
+    "@graph": [
+		{
+		    "@id": "http://fetish.example.org",
+			"schema:name": "Commodity Fetishism Extension",
+			"schema:disambiguatingDescription": "terms about commodity fetishism.",
+		    "schema:softwareVersion": "1.0",
+			"rdfs:comment": "The commodity fetishism extension is meant to extend class warfare to the Web. It includes two terms: [[Fetish]] and [[wants]]."
+		}
+	]
+}

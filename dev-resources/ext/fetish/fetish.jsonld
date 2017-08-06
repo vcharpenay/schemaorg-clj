@@ -1,0 +1,26 @@
+{
+    "@context": {
+		"schema": "http://schema.org/",
+		"meta": "http://meta.schema.org/"
+	},
+    "@id": "http://fetish.example.org",
+    "@graph": [
+    {
+      "@id": "http://fetish.example.org/Fetish",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Something someone wants.",
+      "rdfs:label": "Something",
+      "rdfs:subClassOf": "http://fetish.example.org/Something",
+	  "schema:isPartOf": "http://fetish.example.org"
+    },
+    {
+      "@id": "http://fetish.example.org/wants",
+      "@type": "rdf:Property",
+      "rdfs:comment": "Desire of someone for something",
+      "rdfs:label": "wants",
+      "schema:domainIncludes": "http://core.example.org/Someone",
+      "schema:rangeIncludes": "http://fetish.example.org/Fetish",
+	  "schema:isPartOf": "http://fetish.example.org"
+    }
+	]
+}

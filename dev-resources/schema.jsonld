@@ -1,0 +1,31 @@
+{
+    "@context": {
+		"schema": "http://schema.org/",
+		"meta": "http://meta.schema.org/"
+	},
+    "@id": "http://core.example.org",
+    "@graph": [
+    {
+      "@id": "http://core.example.org/Something",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Well... Anything.",
+      "rdfs:label": "Something",
+      "rdfs:subClassOf": "http://schema.org/Thing"
+    },
+    {
+      "@id": "http://core.example.org/Someone",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "Well... Anyone.",
+      "rdfs:label": "Something",
+      "rdfs:subClassOf": "http://schema.org/Person"
+    },
+    {
+      "@id": "http://core.example.org/has",
+      "@type": "rdf:Property",
+      "rdfs:comment": "Possession of something by someone.",
+      "rdfs:label": "has",
+      "schema:domainIncludes": "http://core.example.org/Someone",
+      "schema:rangeIncludes": "http://core.example.org/Something"
+    }
+	]
+}
