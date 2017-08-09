@@ -78,12 +78,13 @@
 
   {% if rdfs_type == "rdfs:Class" %}
 
-  {% if domain_of %}
+  {% for prop in domain_of %}
+  {% if loop.first %}
   <table class="definition-table">
     <thead><tr><th>Property</th><th>Expected Type</th><th>Description</th></tr></thead>
     <tr class="supertype"><th class="supertype-name" colspan="3">Properties from <a href="{{ term }}">{{ label }}</a></th></tr>
     <tbody class="supertype">
-    {% for prop in domain_of %}
+  {% endif %}
       <tr typeof="rdfs:Property" resource="{{ prop.term }}">
         <th class="prop-nam" scope="row"><code property="rdfs:label"><a href="{{ prop.term }}">{{ prop.label }}</a></code></th>
         <td class="prop-ect">
@@ -93,20 +94,21 @@
         </td>
         <td class="prop-desc" property="rdfs:comment">{{ prop.desc }}</td>
       </tr>
-    {% endfor %}
+  {% if loop.last %}
     </tbody>
   </table>
   <br/>
   {% endif %}
+  {% endfor %}
 
-  {% if range_of %}
+  {% for prop in range_of %}
+  {% if loop.first %}
   <br/>
   <div id="incoming">Instances of <a href="{{ term }}">{{ label }}</a> may appear as values for the following properties</div>
   <br/>
-  
   <table class="definition-table">
     <thead><tr><th>Property</th><th>On Types</th><th>Description</th></tr></thead>
-    {% for prop in range_of %}
+  {% endif %}
       <tr typeof="rdfs:Property" resource="{{ prop.term }}">
         <th class="prop-nam" scope="row"><code property="rdfs:label"><a href="{{ prop.term }}">{{ prop.label }}</a></code></th>
         <td class="prop-ect">
@@ -116,68 +118,79 @@
         </td>
         <td class="prop-desc" property="rdfs:comment">{{ prop.desc }}</td>
       </tr>
-    {% endfor %}
+  {% if loop.last %}
   </table>
   {% endif %}
+  {% endfor %}
 
-  {% if parent_of %}
+  {% for cl in parent_of %}
+  {% if loop.first %}
   <h4>More specific Types</h4>
   <ul>
-    {% for cl in parent_of %}
+  {% endif %}
     <li><a href="{{ cl.term }}">{{ cl.label }}</a></li>
-    {% endfor %}
+  {% if loop.last %}
   </ul>
   {% endif %}
+  {% endfor %}
 
   {% elif rdfs_type == "rdf:Property" %}
 
-  {% if domain %}
+  {% for cl in domain %}
+  {% if loop.first %}
   <table class="definition-table">
     <thead><tr><th>Values expected to be one of these types</th></tr></thead>
     <tr><td>
-    {% for cl in domain %}
+  {% endif %}
       <code><a href="{{ cl.term }}" title="The '{{ label }}' property has values that include instances of the '{{ cl.label }}' type.">{{ cl.label }}</a></code>
       {% if not loop.last %}<br/>{% endif %}
-    {% endfor %}
+  {% if loop.last %}
     </td></tr>
   </table>
   {% endif %}
+  {% endfor %}
 
-  {% if range %}
+  {% for cl in range %}
+  {% if loop.first %}
   <table class="definition-table">
     <thead><tr><th>Used on these types</th></tr></thead>
     <tr><td>
-    {% for cl in range %}
+  {% endif %}
       <code><a href="{{ cl.term }}" title="The '{{ label }}' property is used on the '{{ cl.label }}' type.">{{ cl.label }}</a></code>
       {% if not loop.last %}<br/>{% endif %}
-    {% endfor %}
+  {% if loop.last %}
     </td></tr>
   </table>
   {% endif %}
+  {% endfor %}
 
-  {% if parent %}
+  {% for p in parent %}
+  {% if loop.first %}
   <table class="definition-table">
     <thead><tr><th>Super-properties</th></tr></thead>
     <tr><td>
-    {% for p in parent %}
+  {% endif %}
       <code><a href="{{ p.term }}" title="{{ p.label }}: {{ p.desc }}.">{{ p.label }}</a></code>
       {% if not loop.last %}<br/>{% endif %}
-    {% endfor %}
+  {% if loop.last %}
     </td></tr>
   </table>
   {% endif %}
+  {% endfor %}
 
-  {% if parent_of %}
+  {% for p in parent_of %}
+  {% if loop.first %}
   <table class="definition-table">
     <thead><tr><th>Sub-properties</th></tr></thead>
     <tr><td>
-    {% for p in parent_of %}
+  {% endif %}
       <code><a href="{{ p.term }}" title="{{ p.label }}: {{ p.desc }}.">{{ p.label }}</a></code>
       {% if not loop.last %}<br/>{% endif %}
-    {% endfor %}
+  {% if loop.last %}
     </td></tr>
   </table>
   {% endif %}
+  {% endfor %}
 
   {% endif %}
 
