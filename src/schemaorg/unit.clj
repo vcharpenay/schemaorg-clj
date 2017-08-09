@@ -104,7 +104,6 @@ SELECT * WHERE {
 						 (get-hierarchy (:parent b) endpoint)))))
 
 (defn get-class [term endpoint]
-	; TODO domain/range of parent classes
 	; TODO multiple inheritance?
 	(let [bindings (sparql/query (class-query term) endpoint)
 				hierarchy (get-hierarchy (-> bindings first :parent) endpoint)]
