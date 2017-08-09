@@ -72,7 +72,12 @@
   <h1 property="rdfs:label" class="page-title">{{ label }}</h1>
   <span class="canonicalUrl">Canonical URL: <a href="{{ term }}">{{ term }}</a></span>
   
-  <h4><span class='breadcrumbs'><a href="{{ term }}">{{ label }}</a></span></h4>
+  <h4><span class='breadcrumbs'>
+    {% for cl in reverse_parent %}
+    <a href="{{ cl.term }}">{{ cl.label }}</a> &gt;
+    {% endfor %}
+    <a href="{{ term }}">{{ label }}</a>
+  </span></h4>
 
   <div property="rdfs:comment">{{ desc }}</div><br/>
 

@@ -69,6 +69,7 @@ SELECT * WHERE {
   " "%term%" term))
 
 (defn get-prop [term endpoint]
+	; TODO Thing > Property [> parent] > term
 	(let [bindings (sparql/query (prop-query term) endpoint)]
 		{"rdfs_type" "rdf:Property"
 	 	 "term" term
@@ -90,17 +91,29 @@ SELECT * WHERE {
 															 "desc" (-> p first :childDesc)})
 		 									(vals (group-by :child bindings)))}))
 
+(defn get-hierarchy [term endpoint]
+	(let [bindings (sparql/query (class-query term) endpoint)
+			  b (first bindings)]
+		(if (nil? b)
+			(list)
+			(list* {"term" term
+							"label" (:termLabel b)
+							"desc" (:termDesc b)
+							"domain_of" (map (fn [p] (get-prop (-> p first :domProp) endpoint))
+		 											(vals (group-by :domProp bindings)))}
+						 (get-hierarchy (:parent b) endpoint)))))
+
 (defn get-class [term endpoint]
-	; TODO all parent classes
 	; TODO domain/range of parent classes
-	(let [bindings (sparql/query (class-query term) endpoint)]
+	; TODO multiple inheritance?
+	(let [bindings (sparql/query (class-query term) endpoint)
+				hierarchy (get-hierarchy (-> bindings first :parent) endpoint)]
 		{"rdfs_type" "rdfs:Class"
  		 "term" term
 		 "label" (-> bindings first :termLabel)
 		 "desc" (-> bindings first :termDesc)
-		 "parent" {"term" (-> bindings first :parent)
-							 "label" (-> bindings first :parentLabel)
-							 "desc" (-> bindings first :parentDesc)}
+		 "parent" hierarchy
+		 "reverse_parent" (reverse hierarchy) ; for breadcrumbs
 		 "domain_of" (map (fn [p] (get-prop (-> p first :domProp) endpoint))
 		 									(vals (group-by :domProp bindings)))
 		 "range_of" (map (fn [p] (get-prop (-> p first :rangeProp) endpoint))
@@ -111,6 +124,7 @@ SELECT * WHERE {
 		 									(vals (group-by :child bindings)))}))
 
 (defn get-unit [term endpoint]
+	; TODO datatype
 	(let [idx (+ 1 (str/last-index-of term "/"))]
 		(if (java.lang.Character/isUpperCase (nth term idx))
 			(get-class term endpoint)

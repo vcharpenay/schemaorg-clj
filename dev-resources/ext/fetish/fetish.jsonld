@@ -22,8 +22,8 @@
       "@id": "http://fetish.example.org/Fetish",
       "@type": "rdfs:Class",
       "rdfs:comment": "Something someone wants.",
-      "rdfs:label": "Something",
-      "rdfs:subClassOf": "http://fetish.example.org/Something",
+      "rdfs:label": "Fetish",
+      "rdfs:subClassOf": "http://core.example.org/Something",
 	  "schema:isPartOf": "http://fetish.example.org"
     },
     {
