@@ -85,7 +85,10 @@ SELECT * WHERE {
 														"label" (-> cl first :rangeLabel)
 														"desc" (-> cl first :rangeDesc)})
 									(vals (group-by :range bindings)))
-		 "parent_of" "TODO"}))
+		 "parent_of" (map (fn [p] {"term" (-> p first :child)
+		 													 "label" (-> p first :childLabel)
+															 "desc" (-> p first :childDesc)})
+		 									(vals (group-by :child bindings)))}))
 
 (defn get-class [term endpoint]
 	; TODO all parent classes
@@ -101,7 +104,11 @@ SELECT * WHERE {
 		 "domain_of" (map (fn [p] (get-prop (-> p first :domProp) endpoint))
 		 									(vals (group-by :domProp bindings)))
 		 "range_of" (map (fn [p] (get-prop (-> p first :rangeProp) endpoint))
-								  	 (vals (group-by :rangeProp bindings)))}))
+								  	 (vals (group-by :rangeProp bindings)))
+		 "parent_of" (map (fn [cl] {"term" (-> cl first :child)
+		 													  "label" (-> cl first :childLabel)
+															  "desc" (-> cl first :childDesc)})
+		 									(vals (group-by :child bindings)))}))
 
 (defn get-unit [term endpoint]
 	(let [idx (+ 1 (str/last-index-of term "/"))]

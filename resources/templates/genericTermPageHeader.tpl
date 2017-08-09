@@ -120,6 +120,15 @@
   </table>
   {% endif %}
 
+  {% if parent_of %}
+  <h4>More specific Types</h4>
+  <ul>
+    {% for cl in parent_of %}
+    <li><a href="{{ cl.term }}">{{ cl.label }}</a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
   {% elif rdfs_type == "rdf:Property" %}
 
   {% if domain %}
@@ -140,6 +149,30 @@
     <tr><td>
     {% for cl in range %}
       <code><a href="{{ cl.term }}" title="The '{{ label }}' property is used on the '{{ cl.label }}' type.">{{ cl.label }}</a></code>
+      {% if not loop.last %}<br/>{% endif %}
+    {% endfor %}
+    </td></tr>
+  </table>
+  {% endif %}
+
+  {% if parent %}
+  <table class="definition-table">
+    <thead><tr><th>Super-properties</th></tr></thead>
+    <tr><td>
+    {% for p in parent %}
+      <code><a href="{{ p.term }}" title="{{ p.label }}: {{ p.desc }}.">{{ p.label }}</a></code>
+      {% if not loop.last %}<br/>{% endif %}
+    {% endfor %}
+    </td></tr>
+  </table>
+  {% endif %}
+
+  {% if parent_of %}
+  <table class="definition-table">
+    <thead><tr><th>Sub-properties</th></tr></thead>
+    <tr><td>
+    {% for p in parent_of %}
+      <code><a href="{{ p.term }}" title="{{ p.label }}: {{ p.desc }}.">{{ p.label }}</a></code>
       {% if not loop.last %}<br/>{% endif %}
     {% endfor %}
     </td></tr>
