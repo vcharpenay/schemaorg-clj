@@ -16,7 +16,7 @@
       "@id": "http://core.example.org/Someone",
       "@type": "rdfs:Class",
       "rdfs:comment": "Well... Anyone.",
-      "rdfs:label": "Something",
+      "rdfs:label": "Someone",
       "rdfs:subClassOf": "http://schema.org/Person"
     },
     {
