@@ -16,8 +16,16 @@
       (into {} props))))
 
 (def jj
-  "Static Jinjava engine"
+  "Static Jinjava template engine"
   (new Jinjava))
+
+(def homepage-tpl
+  "Homepage template."
+  (slurp (io/resource "templates/homepage.tpl")))
+
+(def generic-tpl
+  "Generic template for vocabulary term documentation."
+  (slurp (io/resource "templates/genericTermPageHeader.tpl")))
 
 (defn ctx [term]
   (merge
@@ -25,16 +33,22 @@
     (unit/get-unit (str "http://" (properties "sitename") "/" term)
                    (properties "sparql_endpoint"))))
 
-(defn render-home []
-  (.render jj (slurp (io/resource "templates/homepage.tpl")) properties))
+(defn send-home []
+  {:status 200
+   :headers {"Content-Type" "text/html; charset=utf-8"}
+   :body (.render jj homepage-tpl properties)})
 
-(defn render-generic [term]
-  (.render jj (slurp (io/resource "templates/genericTermPageHeader.tpl")) (ctx term)))
+(defn send-generic [term]
+  (let [c (ctx term)]
+    {:status (if (nil? (get "term" c)) 404 200)
+     :headers {"Content-Type" "text/html; charset=utf-8"}
+     :body (.render jj generic-tpl c)}))
 
 (defroutes app-routes
-  (GET "/" [] (render-home))
-  (GET "/:term" [term] (render-generic term))
-  (route/not-found "Not Found"))
+  ; TODO content negotiation
+  (GET "/" [] (send-home))
+  (GET "/:term" [term] (send-generic term))
+  (route/not-found (send-generic "?")))
 
 (def app
   (wrap-defaults app-routes site-defaults))

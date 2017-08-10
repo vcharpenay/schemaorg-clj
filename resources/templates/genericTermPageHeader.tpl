@@ -65,6 +65,8 @@
 
 {% include 'templates/basicPageHeader.tpl' with context %}
 
+  {% if term %}
+
   <div id="mainContent" typeof="{{ rdfs_type }}" resource="{{ term }}">
   {{ ext_mappings | safe }}
 
@@ -80,6 +82,12 @@
   </span></h4>
 
   <div property="rdfs:comment">{{ desc }}</div><br/>
+
+  {% else %}{# 404 Not Found #}
+
+  <div id="mainContent">
+
+  {% endif %}
 
   {% if rdfs_type == "rdfs:Class" %}
 
@@ -193,11 +201,16 @@
   {% endif %}
   {% endfor %}
 
+  {% else %}{# 404 Not Found #}
+
+  <h3>404 Not Found.</h3><p><br/>Page not found. Please <a href="/">try the homepage.</a><br/><br/></p>
+
   {% endif %}
 
   <p class="version"><b>Schema Version 3.2</b></p>
 
   </div>
+
 </body>
 </html>
 

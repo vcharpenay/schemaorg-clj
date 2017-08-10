@@ -9,7 +9,6 @@ Changes:
 
 TODO:
  - other templates
- - 404
  - redirection to other known namespace
  - RDFa annotations (or JSON-LD?)
  - content negotiation
