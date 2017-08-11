@@ -17,8 +17,6 @@ WHERE {
     		rdfs:comment ?termDesc .
     	OPTIONAL {
     		<%term%> rdfs:subPropertyOf ?parent .
-    		?parent rdfs:label ?parentLabel ;
-    			      rdfs:comment ?parentDesc .
 		}
     	OPTIONAL {
     		?child rdfs:subPropertyOf <%term%> ;
@@ -65,35 +63,50 @@ SELECT * WHERE {
   " "%term%" term))
 
 (defn get-class-ref [term endpoint]
-	(let [bindings (sparql/query (class-query term) endpoint)]
-		{"rdfs_type" "rdfs:Class"
-			"term" term
-			"label" (-> bindings first :termLabel)
-			"desc" (-> bindings first :termDesc)}))
+	(let [bindings (sparql/query (class-query term) endpoint)
+				b (first bindings)]
+		(if (nil? b)
+			{"term" nil}
+			{"rdfs_type" "rdfs:Class"
+			 "term" term
+			 "label" (-> bindings first :termLabel)
+			 "desc" (-> bindings first :termDesc)})))
+
+(defn get-prop-hierarchy [term endpoint]
+	(let [bindings (sparql/query (prop-query term) endpoint)
+			  b (first bindings)]
+		(if (nil? b)
+			; see meta-schema
+			(list {"term" "http://schema.org/Property"
+						 "label" "Property"
+						 "desc" "Equivalent to rdf:Property."})
+			(list* {"term" term
+							"label" (:termLabel b)
+							"desc" (:termDesc b)}
+						 (get-prop-hierarchy (:parent b) endpoint)))))
 
 (defn get-prop [term endpoint]
-	; FIXME parent, child not found if defined in other namespace
-	; TODO Thing > Property [> parent] > term
+	; FIXME sub-property not found if defined in other namespace
 	(let [bindings (sparql/query (prop-query term) endpoint)]
 		(if (empty? bindings)
 			{"term" nil}
-			{"rdfs_type" "rdf:Property"
-			"term" term
-			"label" (-> bindings first :termLabel)
-			"desc" (-> bindings first :termDesc)
-			"domain" (map (fn [cl] (get-class-ref (-> cl first :dom) endpoint))
-											 (vals (group-by :dom bindings)))
-			"range" (map (fn [cl] (get-class-ref (-> cl first :range) endpoint))
-											 (vals (group-by :range bindings)))
-			"parent" {"term" (-> bindings first :parent)
-								"label" (-> bindings first :parentLabel)
-								"desc" (-> bindings first :parentDesc)}
-			"parent_of" (map (fn [p] {"term" (-> p first :child)
-																"label" (-> p first :childLabel)
-																"desc" (-> p first :childDesc)})
-											 (vals (group-by :child bindings)))})))
+			(let [hierarchy (get-prop-hierarchy (-> bindings first :parent) endpoint)]
+				{"rdfs_type" "rdf:Property"
+				"term" term
+				"label" (-> bindings first :termLabel)
+				"desc" (-> bindings first :termDesc)
+				"domain" (map (fn [cl] (get-class-ref (-> cl first :dom) endpoint))
+												(vals (group-by :dom bindings)))
+				"range" (map (fn [cl] (get-class-ref (-> cl first :range) endpoint))
+												(vals (group-by :range bindings)))
+				"parent" hierarchy
+				"reverse_parent" (reverse hierarchy) ; for breadcrumbs
+				"parent_of" (map (fn [p] {"term" (-> p first :child)
+																	"label" (-> p first :childLabel)
+																	"desc" (-> p first :childDesc)})
+												 (vals (group-by :child bindings)))}))))
 
-(defn get-hierarchy [term endpoint]
+(defn get-class-hierarchy [term endpoint]
 	(let [bindings (sparql/query (class-query term) endpoint)
 			  b (first bindings)]
 		(if (nil? b)
@@ -103,7 +116,7 @@ SELECT * WHERE {
 							"desc" (:termDesc b)
 							"domain_of" (map (fn [p] (get-prop (-> p first :domProp) endpoint))
 		 											(vals (group-by :domProp bindings)))}
-						 (get-hierarchy (:parent b) endpoint)))))
+						 (get-class-hierarchy (:parent b) endpoint)))))
 
 (defn get-class [term endpoint]
 	; TODO multiple inheritance?
@@ -112,7 +125,7 @@ SELECT * WHERE {
 	(let [bindings (sparql/query (class-query term) endpoint)]
 		(if (empty? bindings)
 			{"term" nil}
-			(let [hierarchy (get-hierarchy (-> bindings first :parent) endpoint)]
+			(let [hierarchy (get-class-hierarchy (-> bindings first :parent) endpoint)]
 				{"rdfs_type" "rdfs:Class"
 		 		 "term" term
 				 "label" (-> bindings first :termLabel)
