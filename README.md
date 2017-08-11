@@ -10,6 +10,7 @@ Changes:
 TODO:
  - other templates
  - redirection to other known namespace
+ - examples
  - RDFa annotations (or JSON-LD?)
  - content negotiation
  - unit caching

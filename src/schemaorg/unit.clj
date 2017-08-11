@@ -108,24 +108,24 @@ SELECT * WHERE {
 
 (defn get-class [term endpoint]
 	; TODO multiple inheritance?
-	(let [bindings (sparql/query (class-query term) endpoint)
-				hierarchy (get-hierarchy (-> bindings first :parent) endpoint)]
+	(let [bindings (sparql/query (class-query term) endpoint)]
 		(if (empty? bindings)
 			{"term" nil}
-			{"rdfs_type" "rdfs:Class"
-			"term" term
-			"label" (-> bindings first :termLabel)
-			"desc" (-> bindings first :termDesc)
-			"parent" hierarchy
-			"reverse_parent" (reverse hierarchy) ; for breadcrumbs
-			"domain_of" (map (fn [p] (get-prop (-> p first :domProp) endpoint))
-												(vals (group-by :domProp bindings)))
-			"range_of" (map (fn [p] (get-prop (-> p first :rangeProp) endpoint))
-											(vals (group-by :rangeProp bindings)))
-			"parent_of" (map (fn [cl] {"term" (-> cl first :child)
-																	"label" (-> cl first :childLabel)
-																	"desc" (-> cl first :childDesc)})
-											 (vals (group-by :child bindings)))})))
+			(let [hierarchy (get-hierarchy (-> bindings first :parent) endpoint)]
+				{"rdfs_type" "rdfs:Class"
+				"term" term
+				"label" (-> bindings first :termLabel)
+				"desc" (-> bindings first :termDesc)
+				"parent" hierarchy
+				"reverse_parent" (reverse hierarchy) ; for breadcrumbs
+				"domain_of" (map (fn [p] (get-prop (-> p first :domProp) endpoint))
+													(vals (group-by :domProp bindings)))
+				"range_of" (map (fn [p] (get-prop (-> p first :rangeProp) endpoint))
+												(vals (group-by :rangeProp bindings)))
+				"parent_of" (map (fn [cl] {"term" (-> cl first :child)
+																		"label" (-> cl first :childLabel)
+																		"desc" (-> cl first :childDesc)})
+												(vals (group-by :child bindings)))}))))
 
 (defn get-unit [term endpoint]
 	; TODO datatype
