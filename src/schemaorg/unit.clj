@@ -16,24 +16,20 @@ WHERE {
     		rdfs:label ?termLabel ;
     		rdfs:comment ?termDesc .
     	OPTIONAL {
-    		<%term%> rdfs:subPropertyOf ?parent ;
-    			rdfs:label ?parentLabel ;
-    			rdfs:comment ?parentDesc .
+    		<%term%> rdfs:subPropertyOf ?parent .
+    		?parent rdfs:label ?parentLabel ;
+    			      rdfs:comment ?parentDesc .
 		}
     	OPTIONAL {
     		?child rdfs:subPropertyOf <%term%> ;
-    			rdfs:label ?childLabel ;
-    			rdfs:comment ?childDesc .
+    			   rdfs:label ?childLabel ;
+    			   rdfs:comment ?childDesc .
 		}
     	OPTIONAL {
     		<%term%> schema:domainIncludes ?dom  .
-    		?dom rdfs:label ?domLabel ;
-    		     rdfs:comment ?domDesc .
 		}
     	OPTIONAL {
     		<%term%> schema:rangeIncludes ?range  .
-    		?range rdfs:label ?rangeLabel ;
-    		       rdfs:comment ?rangeDesc .
 		}
 	}
 }
@@ -68,8 +64,15 @@ SELECT * WHERE {
 }
   " "%term%" term))
 
+(defn get-class-ref [term endpoint]
+	(let [bindings (sparql/query (class-query term) endpoint)]
+		{"rdfs_type" "rdfs:Class"
+			"term" term
+			"label" (-> bindings first :termLabel)
+			"desc" (-> bindings first :termDesc)}))
+
 (defn get-prop [term endpoint]
-	; FIXME parent, child, domain, range might be in another namespace
+	; FIXME parent, child not found if defined in other namespace
 	; TODO Thing > Property [> parent] > term
 	(let [bindings (sparql/query (prop-query term) endpoint)]
 		(if (empty? bindings)
@@ -78,17 +81,13 @@ SELECT * WHERE {
 			"term" term
 			"label" (-> bindings first :termLabel)
 			"desc" (-> bindings first :termDesc)
+			"domain" (map (fn [cl] (get-class-ref (-> cl first :dom) endpoint))
+											 (vals (group-by :dom bindings)))
+			"range" (map (fn [cl] (get-class-ref (-> cl first :range) endpoint))
+											 (vals (group-by :range bindings)))
 			"parent" {"term" (-> bindings first :parent)
 								"label" (-> bindings first :parentLabel)
 								"desc" (-> bindings first :parentDesc)}
-			"domain" (map (fn [cl] {"term" (-> cl first :dom)
-															"label" (-> cl first :domLabel)
-															"desc" (-> cl first :domDesc)})
-										(vals (group-by :dom bindings)))
-			"range" (map (fn [cl] {"term" (-> cl first :range)
-															"label" (-> cl first :rangeLabel)
-															"desc" (-> cl first :rangeDesc)})
-										(vals (group-by :range bindings)))
 			"parent_of" (map (fn [p] {"term" (-> p first :child)
 																"label" (-> p first :childLabel)
 																"desc" (-> p first :childDesc)})
@@ -108,21 +107,23 @@ SELECT * WHERE {
 
 (defn get-class [term endpoint]
 	; TODO multiple inheritance?
+	; TODO enumeration
+	; FIXME sub-class not found if defined in other namespace
 	(let [bindings (sparql/query (class-query term) endpoint)]
 		(if (empty? bindings)
 			{"term" nil}
 			(let [hierarchy (get-hierarchy (-> bindings first :parent) endpoint)]
 				{"rdfs_type" "rdfs:Class"
-				"term" term
-				"label" (-> bindings first :termLabel)
-				"desc" (-> bindings first :termDesc)
-				"parent" hierarchy
-				"reverse_parent" (reverse hierarchy) ; for breadcrumbs
-				"domain_of" (map (fn [p] (get-prop (-> p first :domProp) endpoint))
+		 		 "term" term
+				 "label" (-> bindings first :termLabel)
+				 "desc" (-> bindings first :termDesc)
+				 "parent" hierarchy
+				 "reverse_parent" (reverse hierarchy) ; for breadcrumbs
+				 "domain_of" (map (fn [p] (get-prop (-> p first :domProp) endpoint))
 													(vals (group-by :domProp bindings)))
-				"range_of" (map (fn [p] (get-prop (-> p first :rangeProp) endpoint))
+				 "range_of" (map (fn [p] (get-prop (-> p first :rangeProp) endpoint))
 												(vals (group-by :rangeProp bindings)))
-				"parent_of" (map (fn [cl] {"term" (-> cl first :child)
+				 "parent_of" (map (fn [cl] {"term" (-> cl first :child)
 																		"label" (-> cl first :childLabel)
 																		"desc" (-> cl first :childDesc)})
 												(vals (group-by :child bindings)))}))))
