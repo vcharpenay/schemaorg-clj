@@ -98,16 +98,32 @@
     <tr class="supertype"><th class="supertype-name" colspan="3">Properties from <a href="{{ term }}">{{ label }}</a></th></tr>
     <tbody class="supertype">
   {% endif %}
-  {% include 'templates/propertyTableRow.tpl' with context %}
+    <tr typeof="rdfs:Property" resource="{{ prop.term }}">
+      <th class="prop-nam" scope="row"><code property="rdfs:label"><a href="{{ prop.term }}">{{ prop.label }}</a></code></th>
+      <td class="prop-ect">
+      {% for cl in prop.range %}
+      <a href="{{ cl.term }}">{{ cl.label }}</a> {% if not loop.last %}&nbsp;or<br/>{% endif %}
+      {% endfor %}
+      </td>
+      <td class="prop-desc" property="rdfs:comment">{{ prop.desc }}</td>
+    </tr>
   {% if loop.last %}
     </tbody>
     {% for p in parent %}
-    {% for prop in p.domain_of %}
+    {% for pprop in p.domain_of %}
     {% if loop.first %}
     <tr class="supertype"><th class="supertype-name" colspan="3">Properties from <a href="{{ p.term }}">{{ p.label }}</a></th></tr>
     <tbody class="supertype">
     {% endif %}
-    {% include 'templates/propertyTableRow.tpl' with context %}
+      <tr typeof="rdfs:Property" resource="{{ prop.term }}">
+        <th class="prop-nam" scope="row"><code property="rdfs:label"><a href="{{ pprop.term }}">{{ pprop.label }}</a></code></th>
+        <td class="prop-ect">
+        {% for pcl in pprop.range %}
+        <a href="{{ pcl.term }}">{{ pcl.label }}</a> {% if not loop.last %}&nbsp;or<br/>{% endif %}
+        {% endfor %}
+        </td>
+        <td class="prop-desc" property="rdfs:comment">{{ pprop.desc }}</td>
+      </tr>
     {% if loop.last %}
     </tbody>
     {% endif %}
@@ -126,7 +142,15 @@
   <table class="definition-table">
     <thead><tr><th>Property</th><th>On Types</th><th>Description</th></tr></thead>
   {% endif %}
-  {% include 'templates/propertyTableRow.tpl' with context %}
+    <tr typeof="rdfs:Property" resource="{{ prop.term }}">
+      <th class="prop-nam" scope="row"><code property="rdfs:label"><a href="{{ prop.term }}">{{ prop.label }}</a></code></th>
+      <td class="prop-ect">
+      {% for cl in prop.domain %}
+      <a href="{{ cl.term }}">{{ cl.label }}</a> {% if not loop.last %}&nbsp;or<br/>{% endif %}
+      {% endfor %}
+      </td>
+      <td class="prop-desc" property="rdfs:comment">{{ prop.desc }}</td>
+    </tr>
   {% if loop.last %}
   </table>
   {% endif %}

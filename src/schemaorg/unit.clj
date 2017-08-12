@@ -62,24 +62,29 @@ SELECT * WHERE {
 }
   " "%term%" term))
 
+(defn group-by-var
+	"Helper function that groups bindings by `var`, if bound."
+	[var bindings]
+	(if (every? (fn [b] (empty? (b var))) bindings)
+		nil
+		(vals (group-by var bindings))))
+
 (defn get-class-ref [term endpoint]
 	(let [bindings (sparql/query (class-query term) endpoint)
 				b (first bindings)]
 		(if (nil? b)
 			{"term" nil}
-			{"rdfs_type" "rdfs:Class"
-			 "term" term
+			{"term" term
 			 "label" (-> bindings first :termLabel)
 			 "desc" (-> bindings first :termDesc)})))
 
 (defn get-prop-hierarchy [term endpoint]
+	; TODO Thing > Property [> parent] > term
 	(let [bindings (sparql/query (prop-query term) endpoint)
 			  b (first bindings)]
 		(if (nil? b)
 			; see meta-schema
-			(list {"term" "http://schema.org/Property"
-						 "label" "Property"
-						 "desc" "Equivalent to rdf:Property."})
+			(list)
 			(list* {"term" term
 							"label" (:termLabel b)
 							"desc" (:termDesc b)}
@@ -96,15 +101,15 @@ SELECT * WHERE {
 				"label" (-> bindings first :termLabel)
 				"desc" (-> bindings first :termDesc)
 				"domain" (map (fn [cl] (get-class-ref (-> cl first :dom) endpoint))
-												(vals (group-by :dom bindings)))
+											(group-by-var :dom bindings))
 				"range" (map (fn [cl] (get-class-ref (-> cl first :range) endpoint))
-												(vals (group-by :range bindings)))
+										 (group-by-var :range bindings))
 				"parent" hierarchy
 				"reverse_parent" (reverse hierarchy) ; for breadcrumbs
 				"parent_of" (map (fn [p] {"term" (-> p first :child)
 																	"label" (-> p first :childLabel)
 																	"desc" (-> p first :childDesc)})
-												 (vals (group-by :child bindings)))}))))
+												 (group-by-var :child bindings))}))))
 
 (defn get-class-hierarchy [term endpoint]
 	(let [bindings (sparql/query (class-query term) endpoint)
@@ -115,13 +120,14 @@ SELECT * WHERE {
 							"label" (:termLabel b)
 							"desc" (:termDesc b)
 							"domain_of" (map (fn [p] (get-prop (-> p first :domProp) endpoint))
-		 											(vals (group-by :domProp bindings)))}
+		 													 (group-by-var :domProp bindings))}
 						 (get-class-hierarchy (:parent b) endpoint)))))
 
 (defn get-class [term endpoint]
 	; TODO multiple inheritance?
 	; TODO enumeration
 	; FIXME sub-class not found if defined in other namespace
+	; FIXME fallback if no label/desc for a term
 	(let [bindings (sparql/query (class-query term) endpoint)]
 		(if (empty? bindings)
 			{"term" nil}
@@ -133,13 +139,11 @@ SELECT * WHERE {
 				 "parent" hierarchy
 				 "reverse_parent" (reverse hierarchy) ; for breadcrumbs
 				 "domain_of" (map (fn [p] (get-prop (-> p first :domProp) endpoint))
-													(vals (group-by :domProp bindings)))
+													(group-by-var :domProp bindings))
 				 "range_of" (map (fn [p] (get-prop (-> p first :rangeProp) endpoint))
-												(vals (group-by :rangeProp bindings)))
-				 "parent_of" (map (fn [cl] {"term" (-> cl first :child)
-																		"label" (-> cl first :childLabel)
-																		"desc" (-> cl first :childDesc)})
-												(vals (group-by :child bindings)))}))))
+												(group-by-var :rangeProp bindings))
+				 "parent_of" (map (fn [cl] (get-class-ref (-> cl first :child) endpoint))
+												(group-by-var :child bindings))}))))
 
 (defn get-unit [term endpoint]
 	; TODO datatype
