@@ -40,7 +40,7 @@
 
 (defn send-generic [term]
   (let [c (ctx term)]
-    {:status (if (nil? (get "term" c)) 404 200)
+    {:status (if (nil? (get "rdfs_type" c)) 404 200)
      :headers {"Content-Type" "text/html; charset=utf-8"}
      :body (.render jj generic-tpl c)}))
 
