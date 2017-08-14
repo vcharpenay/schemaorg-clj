@@ -65,7 +65,7 @@
 
 {% include 'templates/basicPageHeader.tpl' with context %}
 
-  {% if term %}
+  {% if rdfs_type %}
 
   <div id="mainContent" typeof="{{ rdfs_type }}" resource="{{ term }}">
   {{ ext_mappings | safe }}

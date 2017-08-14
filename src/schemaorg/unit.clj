@@ -69,11 +69,17 @@ SELECT * WHERE {
 		nil
 		(vals (group-by var bindings))))
 
+(defn local-name
+	"Local name in term URI (used as default label)."
+	[term]
+	(last (str/split term #"/")))
+
 (defn get-class-ref [term endpoint]
 	(let [bindings (sparql/query (class-query term) endpoint)
 				b (first bindings)]
 		(if (nil? b)
-			{"term" nil}
+			{"term" term
+			 "label" (local-name term)}
 			{"term" term
 			 "label" (-> bindings first :termLabel)
 			 "desc" (-> bindings first :termDesc)})))
@@ -83,7 +89,6 @@ SELECT * WHERE {
 	(let [bindings (sparql/query (prop-query term) endpoint)
 			  b (first bindings)]
 		(if (nil? b)
-			; see meta-schema
 			(list)
 			(list* {"term" term
 							"label" (:termLabel b)
@@ -92,9 +97,11 @@ SELECT * WHERE {
 
 (defn get-prop [term endpoint]
 	; FIXME sub-property not found if defined in other namespace
+	; TODO sort properties/classes alphabetically
 	(let [bindings (sparql/query (prop-query term) endpoint)]
 		(if (empty? bindings)
-			{"term" nil}
+			{"term" term
+			 "label" (local-name term)}
 			(let [hierarchy (get-prop-hierarchy (-> bindings first :parent) endpoint)]
 				{"rdfs_type" "rdf:Property"
 				"term" term
@@ -127,10 +134,11 @@ SELECT * WHERE {
 	; TODO multiple inheritance?
 	; TODO enumeration
 	; FIXME sub-class not found if defined in other namespace
-	; FIXME fallback if no label/desc for a term
+	; TODO sort properties/classes alphabetically
 	(let [bindings (sparql/query (class-query term) endpoint)]
 		(if (empty? bindings)
-			{"term" nil}
+			{"term" term
+			 "label" (local-name term)}
 			(let [hierarchy (get-class-hierarchy (-> bindings first :parent) endpoint)]
 				{"rdfs_type" "rdfs:Class"
 		 		 "term" term
@@ -147,7 +155,6 @@ SELECT * WHERE {
 
 (defn get-unit [term endpoint]
 	; TODO datatype
-	(let [idx (+ 1 (str/last-index-of term "/"))]
-		(if (java.lang.Character/isUpperCase (nth term idx))
-			(get-class term endpoint)
-			(get-prop term endpoint))))
+	(if (java.lang.Character/isUpperCase (first (local-name term)))
+		(get-class term endpoint)
+		(get-prop term endpoint)))
