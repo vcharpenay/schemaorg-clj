@@ -5,7 +5,7 @@
     <title>Full Release Summary: Schema.org - {{requested_version}} - {{ releasedate }}</title>
     <meta name="description" content="Schema.org is a set of extensible schemas that enables webmasters to embed
     structured data on their web pages for use by search engines and other applications." />
-    <link rel="stylesheet" type="text/css" href="/docs/schemaorg.css" />
+    <link rel="stylesheet" type="text/css" href="docs/schemaorg.css" />
 
     <base href="{{ base_href }}" ></base>
 </head>

@@ -15,6 +15,7 @@ TODO:
  - content negotiation
  - unit caching
  - logging
+ - reorganizing templates (e.g. put HTML head in a separate file)
 
 ## Prerequisites
 
