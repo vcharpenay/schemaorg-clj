@@ -48,7 +48,7 @@ We also have a small set of <a href="{{staticPath}}/DataType">primitive data typ
 
  <h2 id="ext">Extensions</h2>
 
- <p>As schema.org has grown, we have developed mechanisms for <a href="/docs/extension.html">community extension</a> as a way of adding more detailed descriptive vocabulary that builds on the schema.org core.</p>
+ <p>As schema.org has grown, we have developed mechanisms for <a href="docs/extension.html">community extension</a> as a way of adding more detailed descriptive vocabulary that builds on the schema.org core.</p>
 
  <p><b>Hosted</b> extensions are managed and published as part of the schema.org project, with their design often led by one of more dedicated community groups.</p>
 
@@ -75,7 +75,7 @@ and in the <a href="http://bib.schema.org/">bibliographic extension</a> we have 
 <p id="ext_pending">
   We use the 'pending' extension as a staging area for new schema.org terms that are under discussion and review.
   Implementors and publishers are cautioned that terms in the <a href="http://pending.schema.org">pending</a> extension
-  may lack consensus and that terminology and definitions could still change significantly after community and <a href="/docs/about.html#cgsg">steering group</a> review.
+  may lack consensus and that terminology and definitions could still change significantly after community and <a href="docs/about.html#cgsg">steering group</a> review.
   Consumers of schema.org data who encourage use of such terms are <em>strongly encouraged</em>
   to update implementations and documentation to track any evolving changes, and to share early implementation feedback with the <a href="http://www.w3.org/community/schemaorg">wider community</a>.
 </p>
@@ -88,12 +88,12 @@ schema.org site functionality. These terms are not intended for general usage in
 </p> 
 
 <p>
-Unlike other core and extension terms, these extensions may be updated at any time without the need for a full <a href="/docs/releases.html">release</a>.
+Unlike other core and extension terms, these extensions may be updated at any time without the need for a full <a href="docs/releases.html">release</a>.
 </p>
 
 <h3 id="extext">External Extensions</h3>
 
-<p>The schema.org <a href="/docs/about.html#cgsg">steering group</a> does not officially approve external extensions - they are fully independent.
+<p>The schema.org <a href="docs/about.html#cgsg">steering group</a> does not officially approve external extensions - they are fully independent.
   We list here some notable extensions that extend schema.org in interesting and useful ways.</p>
 
 <ul>

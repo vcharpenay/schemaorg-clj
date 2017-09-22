@@ -16,7 +16,7 @@ google.setOnLoadCallback(function() {
 var customSearchControl = new google.search.CustomSearchControl('013516846811604855281:nj5laplixaa');
 customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
 var options = new google.search.DrawOptions();
-options.enableSearchboxOnly("/docs/search_results.html", null, false, '#');
+options.enableSearchboxOnly("docs/search_results.html", null, false, '#');
 customSearchControl.draw('cse-search-form', options);
 }, true);
 </script>
@@ -32,14 +32,14 @@ customSearchControl.draw('cse-search-form', options);
 	        {% else %}
 	        <li>
 	        {% endif %}
-				<a href="/docs/documents.html">Documentation</a>
+				<a href="docs/documents.html">Documentation</a>
 			</li>
 	        {% if menu_sel == "Schemas" %}
 	        <li class="activelink">
 	        {% else %}
 	        <li>
 	        {% endif %}
-				<a href="/docs/schemas.html">Schemas</a>
+				<a href="docs/schemas.html">Schemas</a>
 			</li>
 			<li>
 	        {% if home_page == "True" %}
@@ -57,7 +57,7 @@ customSearchControl.draw('cse-search-form', options);
 <div class="devnote"><b>Note</b>: you are viewing the
 	<a href="http://webschemas.org/">webschemas.org</a> development
 	version of <a href="http://schema.org/">schema.org</a>.
-	See <a href="/docs/howwework.html">How we work</a> for more details.
+	See <a href="docs/howwework.html">How we work</a> for more details.
 </div>
 {% endif %}
 

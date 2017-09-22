@@ -16,7 +16,7 @@
 
 <h1>Schema.org versions</h1>
 
-<p>See the <a href="/docs/releases.html">releases page</a> for a longer and more detailed history of schema.org releases.</p>
+<p>See the <a href="docs/releases.html">releases page</a> for a longer and more detailed history of schema.org releases.</p>
 
 <p>The following snapshot(s) of schema.org releases are available:</p>
 
@@ -26,7 +26,7 @@
 {% endfor %}
 </ul>
 
-<p>Note that these snapshots currently contain only the schema.org core vocabulary. Information about <a href="/docs/extension.html">extensions</a> and older releases may be added later.</p>
+<p>Note that these snapshots currently contain only the schema.org core vocabulary. Information about <a href="docs/extension.html">extensions</a> and older releases may be added later.</p>
 
 
 <br/><br/>

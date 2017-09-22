@@ -35,19 +35,19 @@
      {% endif %}
 
      {% if requested_version == liveversion %}
-     This release is also available in <a href="http://schema.org/docs/schema_org_rdfa.html">rdfa</a>. Plus full core and extension definition files in N-Triples, Quads, JSON-LD, and Turtle formats are available for <a href="/docs/developers.html#defs">download</a>.
+     This release is also available in <a href="http://schema.org/docs/schema_org_rdfa.html">rdfa</a>. Plus full core and extension definition files in N-Triples, Quads, JSON-LD, and Turtle formats are available for <a href="docs/developers.html#defs">download</a>.
      {% endif %}
 </dd>
 
 <p>
 <b>Overview:</b>
 This is a <a href="/version/">full release</a> summary for schema.org. It describes in one document the terms (types, properties and enumerations) included in this version of schema.org.
-The <a href="http://schema.org/">live site</a> offers various other page-by-page <a href="/docs/schemas.html">views</a> that include more information and examples.
+The <a href="http://schema.org/">live site</a> offers various other page-by-page <a href="docs/schemas.html">views</a> that include more information and examples.
 Note that schema.org release numbers are not generally included when you <em>use</em> schema.org. In contexts (e.g. related standards work) when a particular
 release needs to be cited, this document provides the appropriate URL.
 </p>
 
-<p>See the <a href="/docs/releases.html">releases page</a> for information about other schema.org releases.</p>
+<p>See the <a href="docs/releases.html">releases page</a> for information about other schema.org releases.</p>
 
 <p>
 <b>Status:</b> this document represents a stable release of schema.org, and is automatically generated from the underlying canonical RDFS-based schema data. Although

@@ -77,7 +77,7 @@ Schema.org is defined as two hierarchies: one for textual property values, and o
 
 
 
-<p>An <em>experimental</em> <a href="http://d3js.org">D3</a>-compatible <a href="/docs/tree.jsonld">JSON</a> version is also available.</p>
+<p>An <em>experimental</em> <a href="http://d3js.org">D3</a>-compatible <a href="docs/tree.jsonld">JSON</a> version is also available.</p>
 <br/><br/>
 
 </div>
