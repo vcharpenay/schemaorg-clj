@@ -227,7 +227,7 @@
 
   {% else %}{# 404 Not Found #}
 
-  <h3>404 Not Found.</h3><p><br/>Page not found. Please <a href="/">try the homepage.</a><br/><br/></p>
+  <h3>404 Not Found.</h3><p><br/>Page not found. Please <a href=".">try the homepage.</a><br/><br/></p>
 
   {% endif %}
 

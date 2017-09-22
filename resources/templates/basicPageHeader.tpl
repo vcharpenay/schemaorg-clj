@@ -5,7 +5,7 @@
 			<div class="wrapper">
 				<div id="sitename">
 				<h1>
-					<a href="/">{{ sitename }}</a>
+					<a href=".">{{ sitename }}</a>
 				</h1>
 				</div>
 				<div id="cse-search-form" style="width: 400px;"></div>
@@ -42,11 +42,7 @@ customSearchControl.draw('cse-search-form', options);
 				<a href="docs/schemas.html">Schemas</a>
 			</li>
 			<li>
-	        {% if home_page == "True" %}
-				<a href="{{staticPath}}/docs/about.html">About</a>
-	        {% else %}
-				<a href="/">Home</a>
-	        {% endif %}
+				<a href="docs/about.html">About</a>
 			</li>
 		</ul>
 	</div>
