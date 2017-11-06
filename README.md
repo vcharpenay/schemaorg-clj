@@ -16,6 +16,8 @@ TODO:
  - unit caching
  - logging
  - reorganizing templates (e.g. put HTML head in a separate file)
+ - unit tests
+ - expand 'Getting started'
 
 ## Prerequisites
 

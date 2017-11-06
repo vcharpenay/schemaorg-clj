@@ -75,7 +75,7 @@ SELECT * WHERE {
 	(last (str/split term #"/")))
 
 (defn get-class-ref [term endpoint]
-	(let [bindings (sparql/query (class-query term) endpoint)
+	(let [bindings (sparql/select (class-query term) endpoint)
 				b (first bindings)]
 		(if (nil? b)
 			{"term" term
@@ -86,7 +86,7 @@ SELECT * WHERE {
 
 (defn get-prop-hierarchy [term endpoint]
 	; TODO Thing > Property [> parent] > term
-	(let [bindings (sparql/query (prop-query term) endpoint)
+	(let [bindings (sparql/select (prop-query term) endpoint)
 			  b (first bindings)]
 		(if (nil? b)
 			(list)
@@ -98,7 +98,7 @@ SELECT * WHERE {
 (defn get-prop [term endpoint]
 	; FIXME sub-property not found if defined in other namespace
 	; TODO sort properties/classes alphabetically
-	(let [bindings (sparql/query (prop-query term) endpoint)]
+	(let [bindings (sparql/select (prop-query term) endpoint)]
 		(if (empty? bindings)
 			{"term" term
 			 "label" (local-name term)}
@@ -119,7 +119,7 @@ SELECT * WHERE {
 												 (group-by-var :child bindings))}))))
 
 (defn get-class-hierarchy [term endpoint]
-	(let [bindings (sparql/query (class-query term) endpoint)
+	(let [bindings (sparql/select (class-query term) endpoint)
 			  b (first bindings)]
 		(if (nil? b)
 			(list)
@@ -135,7 +135,7 @@ SELECT * WHERE {
 	; TODO enumeration
 	; FIXME sub-class not found if defined in other namespace
 	; TODO sort properties/classes alphabetically
-	(let [bindings (sparql/query (class-query term) endpoint)]
+	(let [bindings (sparql/select (class-query term) endpoint)]
 		(if (empty? bindings)
 			{"term" term
 			 "label" (local-name term)}

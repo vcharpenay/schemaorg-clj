@@ -6,7 +6,8 @@
             [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
-            [schemaorg.unit :as unit]))
+            [schemaorg.unit :as unit]
+            [schemaorg.namespace :as namespace]))
 
 (def properties
   "Loads the content of schemaorg.properties (called once at startup)."
@@ -27,28 +28,47 @@
   "Generic template for vocabulary term documentation."
   (slurp (io/resource "templates/genericTermPageHeader.tpl")))
 
-(defn ctx [term]
+(def rdf-mime-types
+  "RDF MIME types"
+  #{"application/rdf+xml"
+    "text/turtle"
+    "application/trig"
+    "application/n-triples"
+    "application/ld+json"})
+
+(defn unit [term]
   (merge
     properties
     (unit/get-unit (str "http://" (properties "sitename") "/" term)
                    (properties "sparql_endpoint"))))
 
-(defn send-home []
-  {:status 200
-   :headers {"Content-Type" "text/html; charset=utf-8"}
-   :body (.render jj homepage-tpl properties)})
+(defn vocab [mime-type]
+  (namespace/get-vocab (str "http://" (properties "sitename"))
+                       mime-type
+                       (properties "sparql_endpoint")))
+
+(defn send-home [accept]
+  ; TODO JSON-LD context if ld+json
+  (if (contains? rdf-mime-types accept)
+    {:status 200
+     :headers {"Content-Type" accept}
+     :body (vocab accept)}
+    {:status 200
+     :headers {"Content-Type" "text/html; charset=utf-8"}
+     :body (.render jj homepage-tpl properties)}))
 
 (defn send-generic [term]
-  (let [c (ctx term)]
-    {:status (if (nil? (get "rdfs_type" c)) 404 200)
+  (let [u (unit term)]
+    {:status (if (nil? (get "rdfs_type" u)) 404 200)
      :headers {"Content-Type" "text/html; charset=utf-8"}
-     :body (.render jj generic-tpl c)}))
+     :body (.render jj generic-tpl u)}))
 
 (defroutes app-routes
-  ; TODO content negotiation
-  (GET "/" [] (send-home))
+  ; TODO per-term content negotiation
+  ; TODO proper 404
+  (GET "/" request (send-home ((:headers request) "accept")))
   (GET "/:term" [term] (send-generic term))
-  (route/not-found (send-generic "?")))
+  (route/not-found {:status 404}))
 
 (def app
   (wrap-defaults app-routes site-defaults))
