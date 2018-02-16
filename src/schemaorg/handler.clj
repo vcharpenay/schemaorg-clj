@@ -55,7 +55,7 @@
 (defn full-hierarchy []
   (merge
     properties
-    (hierarchy/get-html-hierarchy (properties "sparql_endpoint"))))
+    (hierarchy/get-hierarchy (properties "sparql_endpoint"))))
 
 (defn send-home [accept]
   ; TODO JSON-LD context if ld+json

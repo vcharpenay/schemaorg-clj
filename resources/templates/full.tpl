@@ -59,8 +59,45 @@ Schema.org is defined as two hierarchies: one for textual property values, and o
 	</div>
 </div>
 
+{# FIXME recursion not supported by Jinjava, macro not applicable #}
+
 <div id="thing_tree">
-{{ thing_tree | safe }}
+<ul>
+    {% for cl1 in thing_tree %}
+            <li>
+                <a href="{{ cl1.term }}">{{ cl1.label }}</a>
+                <ul>
+                {% for cl2 in cl1.children %}
+                    <li>
+                        <a href="{{ cl2.term }}">{{ cl2.label }}</a>
+                        <ul>
+                        {% for cl3 in cl2.children %}
+                            <li>
+                                <a href="{{ cl3.term }}">{{ cl3.label }}</a>
+                                <ul>
+                                {% for cl4 in cl3.children %}
+                                    <li>
+                                        <a href="{{ cl4.term }}">{{ cl4.label }}</a>
+                                        <ul>
+                                        {% for cl5 in cl4.children %}
+                                            <li>
+                                                <a href="{{ cl5.term }}">{{ cl5.label }}</a>
+                                                <ul>{% if cl5.children %}...{% endif %}</ul>
+                                            </li>
+                                        {% endfor %}
+                                        </ul>
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+                </ul>
+            </li>
+    {% endfor %}
+</ul>
 </div>
 <div class="display: none" id="full_thing_tree">
 {{ full_thing_tree | safe }}
