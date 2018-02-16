@@ -5,7 +5,7 @@
     <title>- {{ sitename }}</title>
     <meta name="description" content="Schema.org is a set of extensible schemas that enables webmasters to embed
     structured data on their web pages for use by search engines and other applications." />
-    <link rel="stylesheet" type="text/css" href="docs/schemaorg.css">
+    <link rel="stylesheet" type="text/css" href="{{ sitebase }}docs/schemaorg.css">
 
 </head>
 <body>
@@ -16,7 +16,7 @@
 	<h1>Schema.org Extensions</h1>
 
 	<p>
-		The term '{{ target }}' is not in the schema.org core vocabulary, but is defined in an <a href="docs/extension.html">extension</a>:
+		The term '{{ target }}' is not in the schema.org core vocabulary, but is defined in an <a href="{{ sitebase }}docs/extension.html">extension</a>:
 	</p> 
 	<ul>
 	{% for ext in extensions %}

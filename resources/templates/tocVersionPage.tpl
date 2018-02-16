@@ -5,7 +5,7 @@
     <title>Schema.org - Full Releases</title>
     <meta name="description" content="Schema.org is a set of extensible schemas that enables webmasters to embed
     structured data on their web pages for use by search engines and other applications." />
-    <link rel="stylesheet" type="text/css" href="docs/schemaorg.css" />
+    <link rel="stylesheet" type="text/css" href="{{ sitebase }}docs/schemaorg.css" />
     <base href="{{ base_href }}" ></base>
 </head>
 <body style="text-align: left;">
@@ -16,7 +16,7 @@
 
 <h1>Schema.org versions</h1>
 
-<p>See the <a href="docs/releases.html">releases page</a> for a longer and more detailed history of schema.org releases.</p>
+<p>See the <a href="{{ sitebase }}docs/releases.html">releases page</a> for a longer and more detailed history of schema.org releases.</p>
 
 <p>The following snapshot(s) of schema.org releases are available:</p>
 

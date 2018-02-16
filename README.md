@@ -9,6 +9,7 @@ Changes:
 
 TODO:
  - other templates
+   - fullReleasePage.tpl
  - redirection to other known namespace (and mark domain/range as unknown if somewhere else)
  - examples
  - RDFa annotations (or JSON-LD?)
@@ -17,6 +18,7 @@ TODO:
  - logging
  - reorganizing templates (e.g. put HTML head in a separate file)
  - unit tests
+ - document properties (e.g. sitename, sitebase)
 
 ## Prerequisites
 

@@ -5,7 +5,7 @@
 			<div class="wrapper">
 				<div id="sitename">
 				<h1>
-					<a href=".">{{ sitename }}</a>
+					<a href="{{ sitebase }}">{{ sitename }}</a>
 				</h1>
 				</div>
 				<div id="cse-search-form" style="width: 400px;"></div>
@@ -16,7 +16,7 @@ google.setOnLoadCallback(function() {
 var customSearchControl = new google.search.CustomSearchControl('013516846811604855281:nj5laplixaa');
 customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
 var options = new google.search.DrawOptions();
-options.enableSearchboxOnly("docs/search_results.html", null, false, '#');
+options.enableSearchboxOnly("{{ sitebase }}docs/search_results.html", null, false, '#');
 customSearchControl.draw('cse-search-form', options);
 }, true);
 </script>
@@ -32,17 +32,17 @@ customSearchControl.draw('cse-search-form', options);
 	        {% else %}
 	        <li>
 	        {% endif %}
-				<a href="docs/documents.html">Documentation</a>
+				<a href="{{ sitebase }}docs/documents.html">Documentation</a>
 			</li>
 	        {% if menu_sel == "Schemas" %}
 	        <li class="activelink">
 	        {% else %}
 	        <li>
 	        {% endif %}
-				<a href="docs/schemas.html">Schemas</a>
+				<a href="{{ sitebase }}docs/schemas.html">Schemas</a>
 			</li>
 			<li>
-				<a href="docs/about.html">About</a>
+				<a href="{{ sitebase }}docs/about.html">About</a>
 			</li>
 		</ul>
 	</div>
