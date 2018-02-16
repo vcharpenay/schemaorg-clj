@@ -58,7 +58,6 @@ Schema.org is defined as two hierarchies: one for textual property values, and o
 		{% endif %}
 	</div>
 </div>
-	
 
 <div id="thing_tree">
 {{ thing_tree | safe }}

@@ -7,7 +7,8 @@
             [compojure.route :as route]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [schemaorg.unit :as unit]
-            [schemaorg.namespace :as namespace]))
+            [schemaorg.namespace :as namespace]
+            [schemaorg.hierarchy :as hierarchy]))
 
 (def properties
   "Loads the content of schemaorg.properties (called once at startup)."
@@ -28,6 +29,10 @@
   "Generic template for vocabulary term documentation."
   (slurp (io/resource "templates/genericTermPageHeader.tpl")))
 
+(def full-tpl
+  "Full class hierarchy template"
+  (slurp (io/resource "templates/full.tpl")))
+
 (def rdf-mime-types
   "RDF MIME types"
   #{"application/rdf+xml"
@@ -47,6 +52,11 @@
                        mime-type
                        (properties "sparql_endpoint")))
 
+(defn full-hierarchy []
+  (merge
+    properties
+    (hierarchy/get-html-hierarchy (properties "sparql_endpoint"))))
+
 (defn send-home [accept]
   ; TODO JSON-LD context if ld+json
   (if (contains? rdf-mime-types accept)
@@ -63,11 +73,17 @@
      :headers {"Content-Type" "text/html; charset=utf-8"}
      :body (.render jj generic-tpl u)}))
 
+(defn send-hierarchy []
+  {:status 200
+   :headers {"Content-Type" "text/html; charset=utf-8"}
+   :body (.render jj full-tpl (full-hierarchy))})
+
 (defroutes app-routes
   ; TODO per-term content negotiation
   ; TODO proper 404
   (GET "/" request (send-home ((:headers request) "accept")))
   (GET "/:term" [term] (send-generic term))
+  (GET "/docs/full.html" [] (send-hierarchy))
   (route/not-found {:status 404}))
 
 (def app

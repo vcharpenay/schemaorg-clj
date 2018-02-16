@@ -9,7 +9,7 @@ Changes:
 
 TODO:
  - other templates
- - redirection to other known namespace (and mark domain/range as unknown if in somewhere else)
+ - redirection to other known namespace (and mark domain/range as unknown if somewhere else)
  - examples
  - RDFa annotations (or JSON-LD?)
  - content negotiation
