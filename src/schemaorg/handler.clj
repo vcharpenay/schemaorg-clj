@@ -33,6 +33,10 @@
   "Full class hierarchy template"
   (slurp (io/resource "templates/full.tpl")))
 
+(def schemas-tpl
+  "Schemas page template with known external namespaces"
+  (slurp (io/resource "templates/schemas.tpl")))
+
 (def rdf-mime-types
   "RDF MIME types"
   #{"application/rdf+xml"
@@ -78,12 +82,18 @@
    :headers {"Content-Type" "text/html; charset=utf-8"}
    :body (.render jj full-tpl (full-hierarchy))})
 
+(defn send-schemas []
+  {:status 200
+   :headers {"Content-Type" "text/html; charset=utf-8"}
+   :body (.render jj schemas-tpl properties)})
+
 (defroutes app-routes
   ; TODO per-term content negotiation
   ; TODO proper 404
   (GET "/" request (send-home ((:headers request) "accept")))
   (GET "/:term" [term] (send-generic term))
   (GET "/docs/full.html" [] (send-hierarchy))
+  (GET "/docs/schemas.html" [] (send-schemas))
   (route/not-found {:status 404}))
 
 (def app
