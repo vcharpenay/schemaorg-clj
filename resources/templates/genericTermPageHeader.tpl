@@ -6,9 +6,9 @@
 	{% if noindexpage %}<meta name="robots" content="noindex">{% endif %}
     <title>{{ label }} - {{ sitename }}</title>
     <meta name="description" content="{{ desc }}" />
-    <link rel="stylesheet" type="text/css" href="docs/schemaorg.css" />
-    <link href="docs/prettify.css" type="text/css" rel="stylesheet" />
-    <script type="text/javascript" src="docs/prettify.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ sitebase }}docs/schemaorg.css" />
+    <link href="{{ sitebase }}docs/prettify.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="{{ sitebase }}docs/prettify.js"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
 
 <script type="text/javascript">
@@ -227,7 +227,7 @@
 
   {% else %}{# 404 Not Found #}
 
-  <h3>404 Not Found.</h3><p><br/>Page not found. Please <a href=".">try the homepage.</a><br/><br/></p>
+  <h3>404 Not Found.</h3><p><br/>Page not found. Please <a href="{{ sitebase }}">try the homepage.</a><br/><br/></p>
 
   {% endif %}
 

@@ -5,7 +5,7 @@
     <title>Schemas - schema.org</title>
     <meta name="description" content="Schema.org is a set of extensible schemas that enables webmasters to embed
     structured data on their web pages for use by search engines and other applications." />
-    <link rel="stylesheet" type="text/css" href="docs/schemaorg.css" />
+    <link rel="stylesheet" type="text/css" href="{{ sitebase }}docs/schemaorg.css" />
 </head>
 <body>
 
@@ -88,7 +88,7 @@ schema.org site functionality. These terms are not intended for general usage in
 </p> 
 
 <p>
-Unlike other core and extension terms, these extensions may be updated at any time without the need for a full <a href="docs/releases.html">release</a>.
+Unlike other core and extension terms, these extensions may be updated at any time without the need for a full <a href="{{ sitebase }}docs/releases.html">release</a>.
 </p>
 
 <h3 id="extext">External Extensions</h3>
@@ -104,7 +104,7 @@ Unlike other core and extension terms, these extensions may be updated at any ti
 
 
 <div id="footer"><p>
-  <a href="../docs/terms.html">Terms and conditions</a></p>
+  <a href="{{ sitebase }}docs/terms.html">Terms and conditions</a></p>
 </div>
 
 </body>
