@@ -15,13 +15,15 @@ SELECT *
 WHERE {
   GRAPH ?graph {
     ?child rdfs:subClassOf ?parent .
-    OPTIONAL {
-      ?child rdf:type rdfs:Class ;
-             rdfs:label ?childLabel
-    }
-    OPTIONAL {
+  } OPTIONAL {
+    GRAPH ?parentGraph {
       ?parent rdf:type rdfs:Class ;
-             rdfs:label ?parentLabel
+        rdfs:label ?parentLabel
+    }
+  } OPTIONAL {
+    GRAPH ?childGraph {
+      ?child rdf:type rdfs:Class ;
+        rdfs:label ?childLabel
     }
   }
 }
