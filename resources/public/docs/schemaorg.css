@@ -130,7 +130,7 @@ text-decoration: none;
 
 #cse-search-form {
   float: right;
-  margin-top:20px;
+  margin-top:5px;
   width: 248px !important;
 }
 @media all and (max-width: 720px) {
@@ -139,7 +139,7 @@ text-decoration: none;
   }
   #cse-search-form {
     margin-left: 15px;
-    margin-top: 20px;
+    margin-top:5px;
   }
 }
 

@@ -8,18 +8,20 @@
 					<a href="{{ sitebase }}">{{ sitename }}</a>
 				</h1>
 				</div>
-				<div id="cse-search-form" style="width: 400px;"></div>
-<script type="text/javascript" src="//www.google.com/jsapi"></script>
-<script type="text/javascript">
-google.load('search', '1', {language : 'en', style : google.loader.themes.ESPRESSO});
-google.setOnLoadCallback(function() {
-var customSearchControl = new google.search.CustomSearchControl('013516846811604855281:nj5laplixaa');
-customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
-var options = new google.search.DrawOptions();
-options.enableSearchboxOnly("{{ sitebase }}docs/search_results.html", null, false, '#');
-customSearchControl.draw('cse-search-form', options);
-}, true);
+				<div id="cse-search-form" style="width: 400px;">
+<script>
+  (function() {
+    var cx = '003149661203300036131:li74k4fnhpu';
+    var gcse = document.createElement('script');
+    gcse.type = 'text/javascript';
+    gcse.async = true;
+    gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(gcse, s);
+  })();
 </script>
+<gcse:search></gcse:search>
+</div>
 			</div>
 		</div>
 	</div>
