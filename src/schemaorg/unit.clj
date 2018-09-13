@@ -102,7 +102,8 @@ SELECT * WHERE {
 		(if (empty? bindings)
 			{"term" term
 			 "label" (local-name term)}
-			(let [hierarchy (get-prop-hierarchy (-> bindings first :parent) endpoint)]
+			(let [parent (-> bindings first :parent)
+						hierarchy (if (empty? parent) () (get-prop-hierarchy parent endpoint))]
 				{"rdfs_type" "rdf:Property"
 				"term" term
 				"label" (-> bindings first :termLabel)
@@ -139,7 +140,8 @@ SELECT * WHERE {
 		(if (empty? bindings)
 			{"term" term
 			 "label" (local-name term)}
-			(let [hierarchy (get-class-hierarchy (-> bindings first :parent) endpoint)]
+			(let [parent (-> bindings first :parent)
+						hierarchy (if (empty? parent) () (get-class-hierarchy parent endpoint))]
 				{"rdfs_type" "rdfs:Class"
 		 		 "term" term
 				 "label" (-> bindings first :termLabel)

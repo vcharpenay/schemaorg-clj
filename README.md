@@ -6,17 +6,21 @@ Changes:
  - no local triple store, schema units are retrieved via SPARQL HTTP
  - extended generic term page template
  - no extension, all namespaces considered equal
+ - one server can serve other namespaces along with the default namespace
 
 TODO:
  - other templates
    - fullReleasePage.tpl
  - redirection to other known namespace (and mark domain/range as unknown if somewhere else)
  - examples
+ - 'see also' and 'source' links
  - RDFa annotations (or JSON-LD?)
+ - static site generation build command
  - content negotiation
  - unit caching
  - logging
  - reorganizing templates (e.g. put HTML head in a separate file)
+ - write templates with hiccup (Clojure DSL for HTML)?
  - unit tests
  - document properties (e.g. sitename, sitebase)
 
