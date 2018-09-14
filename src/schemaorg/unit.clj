@@ -192,9 +192,11 @@ SELECT * WHERE {
 											 (group-by-var :member bindings))}))))
 
 (defn get-unit [term endpoint]
-	(let [entity (get-entity term endpoint)]
-		(case (get entity "rdfs_type")
+	(let [entity (get-entity term endpoint)
+	      type (get entity "rdfs_type")]
+		(case type
 			    "http://www.w3.org/2000/01/rdf-schema#Class" (get-class term endpoint)
 			    "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property" (get-prop term endpoint)
-					; TODO expand entity's hierarchy if known
-			    entity)))
+			    (merge
+						entity
+						{"reverse_parent" (reverse (get-class-hierarchy type endpoint))}))))

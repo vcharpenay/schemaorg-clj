@@ -76,7 +76,16 @@
   
   <h4><span class='breadcrumbs'>
     {% for cl in reverse_parent %}
-    <a href="{{ cl.term }}">{{ cl.label }}</a> &gt;
+    <a href="{{ cl.term }}">{{ cl.label }}</a>
+    {% if loop.last %}
+      {% if rdfs_type != "rdfs:Class" and rdfs_type != "rdf:Property"  %}
+      ::
+      {% else %}
+      &gt;
+      {% endif %}
+    {% else %}
+    &gt;
+    {% endif %}
     {% endfor %}
     <a href="{{ term }}">{{ label }}</a>
   </span></h4>
