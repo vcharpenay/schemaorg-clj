@@ -102,14 +102,17 @@ SELECT * WHERE {
 
 (defn get-prop-hierarchy [term endpoint]
 	; TODO Thing > Property [> parent] > term
-	(let [bindings (sparql/select (prop-query term) endpoint)
-			  b (first bindings)]
-		(if (nil? b)
-			(list)
-			(list* {"term" term
-							"label" (:termLabel b)
-							"desc" (:termDesc b)}
-						 (get-prop-hierarchy (:parent b) endpoint)))))
+	(if (empty? term)
+		(list)
+		(let [bindings (sparql/select (prop-query term) endpoint)
+			    b (first bindings)]
+			(if (nil? b)
+				[{"term" term
+				  "label" (local-name term)}]
+				(list* {"term" term
+								"label" (:termLabel b)
+								"desc" (:termDesc b)}
+							(get-prop-hierarchy (:parent b) endpoint))))))
 
 (defn get-prop [term endpoint]
 	; FIXME sub-property not found if defined in other namespace
@@ -136,16 +139,19 @@ SELECT * WHERE {
 												 (group-by-var :child bindings))}))))
 
 (defn get-class-hierarchy [term endpoint]
-	(let [bindings (sparql/select (class-query term) endpoint)
-			  b (first bindings)]
-		(if (nil? b)
-			(list)
-			(list* {"term" term
-							"label" (:termLabel b)
-							"desc" (:termDesc b)
-							"domain_of" (map (fn [p] (get-prop (-> p first :domProp) endpoint))
-		 													 (group-by-var :domProp bindings))}
-						 (get-class-hierarchy (:parent b) endpoint)))))
+	(if (empty? term)
+		(list)
+		(let [bindings (sparql/select (class-query term) endpoint)
+		      b (first bindings)]
+			(if (nil? b)
+				[{"term" term
+				  "label" (local-name term)}]
+				(list* {"term" term
+								"label" (:termLabel b)
+								"desc" (:termDesc b)
+								"domain_of" (map (fn [p] (get-prop (-> p first :domProp) endpoint))
+																(group-by-var :domProp bindings))}
+							(get-class-hierarchy (:parent b) endpoint))))))
 
 (defn get-class [term endpoint]
 	; TODO multiple inheritance?
