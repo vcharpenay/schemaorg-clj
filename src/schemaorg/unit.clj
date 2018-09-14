@@ -2,6 +2,22 @@
 	(:require [clojure.string :as str]
 						[sparql.client :as sparql]))
 
+(defn entity-query [term]
+	(str/replace "
+PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+
+SELECT *
+WHERE {
+	GRAPH ?graph {
+    	<%term%> rdf:type ?type ;
+    		rdfs:label ?termLabel ;
+    		rdfs:comment ?termDesc .
+	}
+}
+	" "%term%" term))
+
 (defn prop-query [term]
 	(str/replace "
 PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -155,8 +171,20 @@ SELECT * WHERE {
 				 "parent_of" (map (fn [cl] (get-class-ref (-> cl first :child) endpoint))
 												(group-by-var :child bindings))}))))
 
+(defn get-entity [term endpoint]
+	(let [bindings (sparql/select (entity-query term) endpoint)
+	      b (first bindings)]
+		(if (some? b)
+			{"rdfs_type" (:type b)
+			 "term" term
+			 "label" (:termLabel b)
+			 "desc" (:termDesc b)}
+			nil)))
+
 (defn get-unit [term endpoint]
-	; TODO datatype
-	(if (java.lang.Character/isUpperCase (first (local-name term)))
-		(get-class term endpoint)
-		(get-prop term endpoint)))
+	(let [entity (get-entity term endpoint)]
+		(case (get entity "rdfs_type")
+			    "http://www.w3.org/2000/01/rdf-schema#Class" (get-class term endpoint)
+			    "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property" (get-prop term endpoint)
+					; TODO expand entity's hierarchy if known
+			    entity)))

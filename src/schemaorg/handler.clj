@@ -18,6 +18,7 @@
       (into {} props))))
 
 (def jj
+  ; TODO replace by the hiccup DSL?
   "Static Jinjava template engine"
   (new Jinjava))
 
@@ -73,7 +74,7 @@
 
 (defn send-generic [term]
   (let [u (unit term)]
-    {:status (if (nil? (get "rdfs_type" u)) 404 200)
+    {:status (if (nil? u) 404 200)
      :headers {"Content-Type" "text/html; charset=utf-8"}
      :body (.render jj generic-tpl u)}))
 
@@ -88,9 +89,11 @@
    :body (.render jj schemas-tpl properties)})
 
 (defroutes app-routes
+  ; TODO restriction on chars allowed for term/ns?
   ; TODO per-term content negotiation
   ; TODO proper 404
   (GET "/" request (send-home ((:headers request) "accept")))
+  (GET "/:namespace/:term" [namespace term] (send-generic (str namespace "/" term)))
   (GET "/:term" [term] (send-generic term))
   (GET "/docs/full.html" [] (send-hierarchy))
   (GET "/docs/schemas.html" [] (send-schemas))

@@ -87,6 +87,8 @@
 
   <div id="mainContent">
 
+  <h3>404 Not Found.</h3><p><br/>Page not found. Please <a href="{{ sitebase }}">try the homepage.</a><br/><br/></p>
+
   {% endif %}
 
   {% if rdfs_type == "rdfs:Class" %}
@@ -158,7 +160,8 @@
 
   {% for cl in parent_of %}
   {% if loop.first %}
-  <h4>More specific Types</h4>
+  <h4>More specific Types</h4> {# TODO: 'Types' or 'DataTypes' #}
+  
   <ul>
   {% endif %}
     <li><a href="{{ cl.term }}">{{ cl.label }}</a></li>
@@ -224,10 +227,6 @@
   </table>
   {% endif %}
   {% endfor %}
-
-  {% else %}{# 404 Not Found #}
-
-  <h3>404 Not Found.</h3><p><br/>Page not found. Please <a href="{{ sitebase }}">try the homepage.</a><br/><br/></p>
 
   {% endif %}
 

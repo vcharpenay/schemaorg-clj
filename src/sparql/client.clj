@@ -13,6 +13,7 @@
 (defn select
   "Minimal implementation of the SPARQL protocol (SELECT queries). See http://www.w3.org/TR/sparql11-protocol/."
   ; TODO sync function / no error handling
+  ; TODO missing values deserialized as "" (and not as nil)
   [query remote]
   (to-map
     (csv/read-csv
