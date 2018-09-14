@@ -170,6 +170,19 @@
   {% endif %}
   {% endfor %}
 
+  {% for i in members %}
+  {% if loop.first %}
+  <br/>
+  <br/>
+  <b>Enumeration members</b>
+  <ul>
+  {% endif %}
+    <li><a href="{{ i.term }}">{{ i.label }}</a></li>
+  {% if loop.last %}
+  </ul>
+  {% endif %}
+  {% endfor %}
+
   {% elif rdfs_type == "rdf:Property" %}
 
   {% for cl in domain %}

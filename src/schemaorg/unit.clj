@@ -11,9 +11,9 @@ PREFIX schema: <http://schema.org/>
 SELECT *
 WHERE {
 	GRAPH ?graph {
-    	<%term%> rdf:type ?type ;
-    		rdfs:label ?termLabel ;
-    		rdfs:comment ?termDesc .
+  	<%term%> rdf:type ?type ;
+    	rdfs:label ?termLabel ;
+    	rdfs:comment ?termDesc .
 	}
 }
 	" "%term%" term))
@@ -28,22 +28,22 @@ PREFIX schema: <http://schema.org/>
 SELECT *
 WHERE {
 	GRAPH ?graph {
-    	<%term%> rdf:type rdf:Property ;
-    		rdfs:label ?termLabel ;
-    		rdfs:comment ?termDesc .
-    	OPTIONAL {
-    		<%term%> rdfs:subPropertyOf ?parent .
+		<%term%> rdf:type rdf:Property ;
+   		rdfs:label ?termLabel ;
+   		rdfs:comment ?termDesc .
+   	OPTIONAL {
+   		<%term%> rdfs:subPropertyOf ?parent .
 		}
-    	OPTIONAL {
-    		?child rdfs:subPropertyOf <%term%> ;
-    			   rdfs:label ?childLabel ;
-    			   rdfs:comment ?childDesc .
+   	OPTIONAL {
+   		?child rdfs:subPropertyOf <%term%> ;
+				rdfs:label ?childLabel ;
+				rdfs:comment ?childDesc .
 		}
-    	OPTIONAL {
-    		<%term%> schema:domainIncludes ?dom  .
+    OPTIONAL {
+    	<%term%> schema:domainIncludes ?dom  .
 		}
-    	OPTIONAL {
-    		<%term%> schema:rangeIncludes ?range  .
+    OPTIONAL {
+    	<%term%> schema:rangeIncludes ?range  .
 		}
 	}
 }
@@ -57,22 +57,25 @@ PREFIX  schema: <http://schema.org/>
 
 SELECT * WHERE {
 	GRAPH ?graph {
-    	<%term%> rdf:type rdfs:Class ;
-    		rdfs:label ?termLabel ;
-    		rdfs:comment ?termDesc .
-    	OPTIONAL {
-    		<%term%> rdfs:subClassOf ?parent .
+		<%term%> rdf:type rdfs:Class ;
+   		rdfs:label ?termLabel ;
+   		rdfs:comment ?termDesc .
+		OPTIONAL {
+			<%term%> rdfs:subClassOf ?parent .
 		}
-    	OPTIONAL {
-    		?child rdfs:subClassOf <%term%> ;
-    			   rdfs:label ?childLabel ;
-    			   rdfs:comment ?childDesc .
+		OPTIONAL {
+			?child rdfs:subClassOf <%term%> ;
+				rdfs:label ?childLabel ;
+				rdfs:comment ?childDesc .
 		}
-    	OPTIONAL {
-    		?domProp schema:domainIncludes <%term%> .
+		OPTIONAL {
+			?domProp schema:domainIncludes <%term%> .
 		}
-    	OPTIONAL {
-    		?rangeProp schema:rangeIncludes <%term%> .
+		OPTIONAL {
+			?rangeProp schema:rangeIncludes <%term%> .
+		}
+		OPTIONAL {
+			?member a <%term%> .
 		}
 	}
 }
@@ -90,18 +93,26 @@ SELECT * WHERE {
 	[term]
 	(last (str/split term #"/")))
 
-(defn get-class-ref [term endpoint]
-	(let [bindings (sparql/select (class-query term) endpoint)
-				b (first bindings)]
-		(if (nil? b)
+(defn get-entity [term endpoint]
+	(let [bindings (sparql/select (entity-query term) endpoint)
+	      b (first bindings)]
+		(if (some? b)
+			{"rdfs_type" (:type b)
+			 "term" term
+			 "label" (:termLabel b)
+			 "desc" (:termDesc b)}
+			nil)))
+
+(defn get-entity-ref [term endpoint]
+	(let [entity (get-entity term endpoint)]
+		(if (nil? entity)
 			{"term" term
 			 "label" (local-name term)}
-			{"term" term
-			 "label" (-> bindings first :termLabel)
-			 "desc" (-> bindings first :termDesc)})))
+			entity)))
 
 (defn get-prop-hierarchy [term endpoint]
 	; TODO Thing > Property [> parent] > term
+	; TODO test term is IRI instead
 	(if (empty? term)
 		(list)
 		(let [bindings (sparql/select (prop-query term) endpoint)
@@ -127,9 +138,9 @@ SELECT * WHERE {
 				"term" term
 				"label" (-> bindings first :termLabel)
 				"desc" (-> bindings first :termDesc)
-				"domain" (map (fn [cl] (get-class-ref (-> cl first :dom) endpoint))
+				"domain" (map (fn [cl] (get-entity-ref (-> cl first :dom) endpoint))
 											(group-by-var :dom bindings))
-				"range" (map (fn [cl] (get-class-ref (-> cl first :range) endpoint))
+				"range" (map (fn [cl] (get-entity-ref (-> cl first :range) endpoint))
 										 (group-by-var :range bindings))
 				"parent" hierarchy
 				"reverse_parent" (reverse hierarchy) ; for breadcrumbs
@@ -139,6 +150,7 @@ SELECT * WHERE {
 												 (group-by-var :child bindings))}))))
 
 (defn get-class-hierarchy [term endpoint]
+	; TODO test term is IRI instead
 	(if (empty? term)
 		(list)
 		(let [bindings (sparql/select (class-query term) endpoint)
@@ -173,19 +185,11 @@ SELECT * WHERE {
 				 "domain_of" (map (fn [p] (get-prop (-> p first :domProp) endpoint))
 													(group-by-var :domProp bindings))
 				 "range_of" (map (fn [p] (get-prop (-> p first :rangeProp) endpoint))
-												(group-by-var :rangeProp bindings))
-				 "parent_of" (map (fn [cl] (get-class-ref (-> cl first :child) endpoint))
-												(group-by-var :child bindings))}))))
-
-(defn get-entity [term endpoint]
-	(let [bindings (sparql/select (entity-query term) endpoint)
-	      b (first bindings)]
-		(if (some? b)
-			{"rdfs_type" (:type b)
-			 "term" term
-			 "label" (:termLabel b)
-			 "desc" (:termDesc b)}
-			nil)))
+													(group-by-var :rangeProp bindings))
+				 "parent_of" (map (fn [cl] (get-entity-ref (-> cl first :child) endpoint))
+													(group-by-var :child bindings))
+				 "members" (map (fn [i] (get-entity-ref (-> i first :member) endpoint))
+											 (group-by-var :member bindings))}))))
 
 (defn get-unit [term endpoint]
 	(let [entity (get-entity term endpoint)]
